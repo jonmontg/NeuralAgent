@@ -1,6 +1,4 @@
 # NeuralAgent
-
-## Project Overview
 This is a sample of the code I wrote for my Cognitive Science research with Dr. Randall Beer at Indiana University. 
 Our research focused on the behavior of agents in simulated environments given the dynamic interactions between the agent's brain, body, and environment.
 Each agent is controlled by a continuous time recurrent neural network (CTRNN) developed by Dr. Beer. I developed an agent to perform
