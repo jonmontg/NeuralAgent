@@ -30,6 +30,9 @@ public:
     void SetEyeAngle(int eyenum, double angle);
     void SetRadius(double r) {Radius=r;};
     void FixEyes();
+    void SetNeuronInputSignals();
+    void UpdatePhysics();
+    
 
     double cx, cy, Angle, Radius=2, SourceX, SourceY;
     int FixedEyes = 0, RightDriver=1, LeftDriver=2;
