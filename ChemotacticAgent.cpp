@@ -59,7 +59,27 @@ void ChemotacticAgent::SetEyeAngle(int eyenum, double angle)
  */
 void ChemotacticAgent::Step(double StepSize)
 {
-    // updates eye signals to 1/r^2 where r is the distance to the signal source
+    SetNeuronInputSignals();
+    NervousSystem.EulerStep(StepSize);
+    UpdatePhysics();
+
+    // if eyes are fixed, stop
+    if (FixedEyes)
+        return;
+
+    // if eyes are not fixed, update eye locations
+    EyeNeurons.iterator();
+    for (int eye=1; eye<=EyeAngles.Size; eye++) {
+        EyeAngles.set(eye, NervousSystem.NeuronOutput(EyeNeurons.next())*Pi);
+    }
+}
+
+/*
+ * Update the input for each neuron based on the signal strength measured by the agent's eyes.
+ */
+ChemotacticAgent::SetNeuronInputSignals()
+{
+     // updates eye signals to 1/r^2 where r is the distance to the signal source
     EyeAngles.iterator();
     EyeNeurons.iterator();
     for (int eye=1; eye<=EyeAngles.Size; eye++) {
@@ -74,24 +94,17 @@ void ChemotacticAgent::Step(double StepSize)
         int eyen = EyeNeurons.next();
         NervousSystem.SetNeuronExternalInput(eyen, signal*InputWeights[eyen]);
     }
+}
 
-    NervousSystem.EulerStep(StepSize);
-
-    // Update physics
+/*
+ * Update the first order kinematics of the chemotactic agent.
+ */
+ChemotacticAgent::UpdatePhysics()
+{
     double RightVel = NervousSystem.NeuronOutput(RightDriver)*MaxSpeed;
     double LeftVel = NervousSystem.NeuronOutput(LeftDriver)*MaxSpeed;
     double Linear = RightVel+LeftVel;
     cx += Linear*cos(Angle);
     cy += Linear*sin(Angle);
     Angle += (RightVel-LeftVel)/Radius;
-
-    // if eyes are fixed, stop
-    if (FixedEyes)
-        return;
-
-    // if eyes are not fixed, update eye locations
-    EyeNeurons.iterator();
-    for (int eye=1; eye<=EyeAngles.Size; eye++) {
-        EyeAngles.set(eye, NervousSystem.NeuronOutput(EyeNeurons.next())*Pi);
-    }
 }
